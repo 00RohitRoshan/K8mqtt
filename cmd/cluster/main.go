@@ -8,9 +8,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	csRt "github.com/wind-c/comqtt/v2/cluster/rest"
 	"maps"
-	"net"
+
+	csRt "github.com/wind-c/comqtt/v2/cluster/rest"
+
+	// "net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -90,8 +92,11 @@ func realMain(ctx context.Context) error {
 	} else {
 		if members != "" {
 			cfg.Cluster.Members = strings.Split(members, ",")
+			log.Info("members != \"\"")
 		} else {
-			cfg.Cluster.Members = []string{net.JoinHostPort("127.0.0.1", strconv.Itoa(cfg.Cluster.BindPort))}
+			// cfg.Cluster.Members = []string{net.JoinHostPort("127.0.0.1", strconv.Itoa(cfg.Cluster.BindPort))}
+			cfg.Cluster.Members = []string{os.Getenv("$MY_POD_NAME") + "." + os.Getenv("$MY_POD_NAMESPACE") + ".cluster.local:" + strconv.Itoa(cfg.Cluster.BindPort)}
+			log.Info("members : ", cfg.Cluster.Members)
 		}
 	}
 
@@ -110,7 +115,7 @@ func realMain(ctx context.Context) error {
 	cfg.Mqtt.Options.Logger = log.Default()
 	server := mqtt.New(&cfg.Mqtt.Options)
 	log.Info("comqtt server initializing...")
-	initStorage(server, cfg)
+	// initStorage(server, cfg)
 	initAuth(server, cfg)
 	initBridge(server, cfg)
 
@@ -219,7 +224,9 @@ func initStorage(server *mqtt.Server, conf *config.Config) {
 			Password: conf.Redis.Options.Password,
 		},
 	})
+	fmt.Println("here")
 	onError(err, logMsg)
+	fmt.Println("here2")
 }
 
 func initBridge(server *mqtt.Server, conf *config.Config) {

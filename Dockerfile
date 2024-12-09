@@ -18,5 +18,6 @@ FROM alpine
 
 WORKDIR /
 COPY --from=builder /app/comqtt /app/comqtt-cluster ./
+COPY --from=builder ./cmd/config/node1.yml  ./
 
-ENTRYPOINT [ "/comqtt" ]
+ENTRYPOINT [ "/comqtt-cluster", "--conf=./node1.yml"]

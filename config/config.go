@@ -8,7 +8,10 @@ import (
 	tls2 "crypto/tls"
 	"crypto/x509"
 	"errors"
+	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/wind-c/comqtt/v2/cluster/log"
 	comqtt "github.com/wind-c/comqtt/v2/mqtt"
@@ -78,6 +81,11 @@ func parse(buf []byte) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("MY_POD_NAME", os.Getenv("MY_POD_NAME"))
+	service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
+	conf.Cluster.Members = []string{service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)}
+	fmt.Println("members : ", conf.Cluster.Members)
+
 	return conf, nil
 }
 
