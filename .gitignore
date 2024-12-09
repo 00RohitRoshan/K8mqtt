@@ -3,3 +3,5 @@ bolt.db
 raft.db
 .idea
 .vscode
+/cmd/logs/*
+/cmd/data/*
