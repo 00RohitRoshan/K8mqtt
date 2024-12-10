@@ -21,4 +21,5 @@ WORKDIR /
 COPY --from=builder  /app/comqtt-cluster ./
 COPY  ./cmd/config/node1.yml  ./
 
+EXPOSE 80 7946 8946 17946 1883 1882 8080
 ENTRYPOINT [ "/comqtt-cluster", "--conf=/node1.yml"]

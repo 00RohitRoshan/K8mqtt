@@ -85,7 +85,8 @@ func parse(buf []byte) (*Config, error) {
 	fmt.Println("MY_POD_NAME", os.Getenv("MY_POD_NAME"))
 	// service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
 	// conf.Cluster.Members = []string{service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)}
-	conf.Cluster.Members = []string{os.Getenv("IP") + strconv.Itoa(conf.Cluster.BindPort)}
+	Member := os.Getenv("IP") + strconv.Itoa(conf.Cluster.BindPort)
+	conf.Cluster.Members = append(conf.Cluster.Members, Member)
 	fmt.Println("members : ", conf.Cluster.Members)
 
 	return conf, nil

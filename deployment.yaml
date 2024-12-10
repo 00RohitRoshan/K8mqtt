@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: comqtt
+  name: comqtt2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: comqtt
+      app: comqtt2
   template:
     metadata:
       labels:
-        app: comqtt
+        app: comqtt2
     spec:
       containers:
-        - name: comqtt
-          image: gcr.io/iserveustaging/comqtt@sha256:2cf7de6db2c4b78e3fcebeb39924987013dc01fdd57eb67e5b6effe486c4eb47
+        - name: comqtt2
+          image: gcr.io/iserveustaging/comqtt@sha256:1f142e82646d83a9ef896b7714662b03bd622ed0e73daf1d6438488a4b4c1745
           # command: [ "/bin/sh", "-c", "env" ]
           ports:
           - containerPort: 80
@@ -38,17 +38,17 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: IP
-              value: 
+              value: "34.47.204.217:"
       restartPolicy: Always
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: comqtt
+  name: comqtt2
 spec:
   selector:
-    app: comqtt
+    app: comqtt2
   ports:
     - protocol: TCP
       name: rest
