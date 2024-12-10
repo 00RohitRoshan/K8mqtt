@@ -12,7 +12,7 @@ RUN go mod download
 COPY . ./
 
 # RUN go build -o /app/comqtt ./cmd/single
-RUN go build -o /app/comqtt-cluster.deb ./cmd/cluster
+RUN go build -o /app/comqtt-cluster ./cmd/cluster
 
 FROM alpine
 
