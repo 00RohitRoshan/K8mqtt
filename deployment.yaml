@@ -15,7 +15,7 @@ spec:
       containers:
         - name: comqtt
           image: gcr.io/iserveustaging/comqtt@sha256:2cf7de6db2c4b78e3fcebeb39924987013dc01fdd57eb67e5b6effe486c4eb47
-          command: [ "/bin/sh", "-c", "env" ]
+          # command: [ "/bin/sh", "-c", "env" ]
           ports:
           - containerPort: 80
           - containerPort: 7946
