@@ -37,6 +37,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: IP
+              value: 
       restartPolicy: Always
 
 ---
