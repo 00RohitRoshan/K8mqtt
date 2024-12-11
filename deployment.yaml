@@ -39,6 +39,10 @@ spec:
                   fieldPath: status.podIP
             - name: IP
               value: "34.47.204.217:"
+            - name: BIND-ADDR
+              value: 
+            - name: NODE-NAME
+              value: 
       restartPolicy: Always
 
 ---
