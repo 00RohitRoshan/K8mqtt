@@ -92,7 +92,7 @@ func (a *Agent) Start() (err error) {
 			return
 		}
 	}
-	raftAddr := net.JoinHostPort(a.Config.BindAddr, strconv.Itoa(a.Config.RaftPort))
+	raftAddr := net.JoinHostPort("127.0.0.1", strconv.Itoa(a.Config.RaftPort))
 	OnJoinLog(a.Config.NodeName, raftAddr, "setup raft", nil)
 
 	// create and join cluster
