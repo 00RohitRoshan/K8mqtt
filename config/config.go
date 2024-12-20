@@ -12,9 +12,6 @@ import (
 	"os"
 	"strconv"
 
-	// "strings"
-	"time"
-
 	"github.com/wind-c/comqtt/v2/cluster/log"
 	comqtt "github.com/wind-c/comqtt/v2/mqtt"
 	"golang.org/x/exp/rand"
@@ -84,16 +81,16 @@ func parse(buf []byte) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	// service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
-	// Member := service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)
-	Member := os.Getenv("IP") + strconv.Itoa(conf.Cluster.BindPort)
-	conf.Cluster.Members = append(conf.Cluster.Members, Member)
-	// conf.Cluster.BindAddr = service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local" //service or podIP
-	rand.Seed(uint64(time.Now().Unix()))
+	// // service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
+	// // Member := service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)
+	// Member := os.Getenv("IP") + strconv.Itoa(conf.Cluster.BindPort)
+	// conf.Cluster.Members = append(conf.Cluster.Members, Member)
+	// // conf.Cluster.BindAddr = service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local" //service or podIP
+	// rand.Seed(uint64(time.Now().Unix()))
 	conf.Cluster.NodeName = strconv.Itoa((rand.Intn(999999-100000) + 100000))
-	// conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
-	conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
-	conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
+	// // conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
+	// conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
+	// conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
 	fmt.Println("cluster : ", conf.Cluster)
 
 	return conf, nil

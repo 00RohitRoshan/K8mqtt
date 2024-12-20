@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: comqtt2
-          image: gcr.io/iserveustaging/comqtt@sha256:1f142e82646d83a9ef896b7714662b03bd622ed0e73daf1d6438488a4b4c1745
+          image: gcr.io/iserveustaging/comqtt@sha256:ecace167c90b2d176a9103a673581038df6f2543dfa2e2484830a21b3b16d80e
           # command: [ "/bin/sh", "-c", "env" ]
           ports:
           - containerPort: 80
@@ -38,7 +38,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: IP
-              value: "34.47.204.217:"
+              value: "35.244.54.181:"
             - name: BIND-ADDR
               value: 
             - name: NODE-NAME

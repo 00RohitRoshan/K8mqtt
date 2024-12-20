@@ -5,3 +5,4 @@ raft.db
 .vscode
 /cmd/logs/*
 /cmd/data/*
+cmd/*.json
