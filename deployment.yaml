@@ -38,9 +38,9 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: IP
-              value: "35.244.54.181:"
-            - name: BIND-ADDR
-              value: 
+              value: ""
+            - name: RaftBootstrap
+              value: true
             - name: NODE-NAME
               value: 
       restartPolicy: Always

@@ -10,11 +10,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
+	"regexp"
+	"runtime"
 
 	"github.com/wind-c/comqtt/v2/cluster/log"
 	comqtt "github.com/wind-c/comqtt/v2/mqtt"
-	"golang.org/x/exp/rand"
 	"gopkg.in/yaml.v3"
 )
 
@@ -81,16 +81,38 @@ func parse(buf []byte) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if runtime.GOOS[0:3] == "win" {
+		// rand.Seed(uint64(time.Now().Unix()))
+		// conf.Cluster.NodeName = strconv.Itoa((rand.Intn(999999-100000) + 100000))
+		// conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
+		Memberst := "172.16.5.182:7946"
+		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
+		Members := re.FindAllString(Memberst, -1)
+		// Members := strings.Split(Memberst, ",")
+		fmt.Println("size :", len(Members))
+		conf.Cluster.Members = append(conf.Cluster.Members, Members...)
+	} else {
+		Memberst := os.Getenv("IP")
+		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
+		Members := re.FindAllString(Memberst, -1)
+		conf.Cluster.Members = append(conf.Cluster.Members, Members...)
+		
+		conf.Cluster.BindAddr = os.Getenv("MY_POD_IP")
+		// conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
+		conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
+		conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
+		if os.Getenv("IP") == "true" {
+			conf.Cluster.RaftBootstrap = true
+		} else {
+			conf.Cluster.RaftBootstrap = false
+		}
+	}
 	// // service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
 	// // Member := service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)
 	// Member := os.Getenv("IP") + strconv.Itoa(conf.Cluster.BindPort)
 	// conf.Cluster.Members = append(conf.Cluster.Members, Member)
 	// // conf.Cluster.BindAddr = service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local" //service or podIP
-	// rand.Seed(uint64(time.Now().Unix()))
-	conf.Cluster.NodeName = strconv.Itoa((rand.Intn(999999-100000) + 100000))
-	// // conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
-	// conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
-	// conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
 	fmt.Println("cluster : ", conf.Cluster)
 
 	return conf, nil

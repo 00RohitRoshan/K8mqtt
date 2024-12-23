@@ -12,11 +12,11 @@ auth:
 cluster:
   discovery-way: 0 #The node discovery way in the cluster: 0 serf、1 memberlist
   node-name: c01  #For versatility, use pure numbers. The name of node must be unique in the cluster.
-  bind-addr: 127.0.0.1  #The ip addr used for discovery and communication between nodes. It is usually set to the intranet ip addr.
+  bind-addr: 172.16.5.182  #The ip addr used for discovery and communication between nodes. It is usually set to the intranet ip addr.
   bind-port: 7946 #The port is used for both UDP and TCP gossip. Used for member discovery and join.
   advertise-addr: #Configuration related to what address to advertise to other cluster members. Used for nat traversal. The default value is bind-addr.
   advertise-port: #Used for member communication. If this port is not set, the default value is bind-port.
-  members: [127.0.0.1:7946]  #Seeds member list, format such as 192.168.0.103:7946,192.168.0.104:7946
+  members: []  #Seeds member list, format such as 192.168.0.103:7946,192.168.0.104:7946
   queue-depth: 10240 #Size of memberlist internal channel which handles UDP messages.
   raft-impl: 0 #The raft implementer: 0 hashicorp/raft, 1 etcd/raft
   raft-port: 8946 #Distributed consistency coordination communication port
