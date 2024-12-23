@@ -86,7 +86,7 @@ func parse(buf []byte) (*Config, error) {
 		// rand.Seed(uint64(time.Now().Unix()))
 		// conf.Cluster.NodeName = strconv.Itoa((rand.Intn(999999-100000) + 100000))
 		// conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
-		Memberst := "172.16.5.182:7946"
+		Memberst := ""
 		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
 		Members := re.FindAllString(Memberst, -1)
 		// Members := strings.Split(Memberst, ",")
@@ -102,11 +102,12 @@ func parse(buf []byte) (*Config, error) {
 		// conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
 		conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
 		conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
-		if os.Getenv("IP") == "true" {
+		if os.Getenv("RaftBootstrap") == "true" {
 			conf.Cluster.RaftBootstrap = true
 		} else {
 			conf.Cluster.RaftBootstrap = false
 		}
+		conf.Cluster.AdvertiseAddr = os.Getenv("advertise-addr")
 	}
 	// // service := strings.Split(os.Getenv("MY_POD_NAME"), "-")
 	// // Member := service[0] + "." + os.Getenv("MY_POD_NAMESPACE") + ".svc.cluster.local:" + strconv.Itoa(conf.Cluster.BindPort)
