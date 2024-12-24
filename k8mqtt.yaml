@@ -40,8 +40,8 @@ spec:
               value: "34.47.170.202:7946"
             - name: RaftBootstrap
               value: "false"
-            - name: advertise-addr
-              value: "34.47.181.2"
+            # - name: advertise-addr
+            #   value: "34.47.181.2"
       restartPolicy: Always
 
 ---

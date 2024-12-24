@@ -13,6 +13,7 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+	"strings"
 
 	"github.com/wind-c/comqtt/v2/cluster/log"
 	comqtt "github.com/wind-c/comqtt/v2/mqtt"
@@ -92,17 +93,20 @@ func getPodIP() []string {
 	if err != nil {
 		panic(err.Error())
 	}
-	pods, err := clientset.CoreV1().Pods(os.Getenv("MY_POD_NAMESPACE")).List(context.TODO(), metav1.ListOptions{
-		LabelSelector: os.Getenv("MY_POD_LABEL"),
-	})
+	pods, err := clientset.CoreV1().Pods(os.Getenv("MY_POD_NAMESPACE")).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 	var res []string
 	for _, e := range pods.Items {
-		res = append(res, e.Status.PodIP+"7946")
+		name := strings.Split(e.Name, "-")
+		if(name[0] == os.Getenv("MY_POD_LABEL")){
+			fmt.Println("pod ip :")
+			res = append(res, e.Status.PodIP+":7946")
+		}
 	}
+	fmt.Printf("There are %d members to join\n", len(res))
 	// for {
 	// 	// get pods in all the namespaces by omitting namespace
 	// 	// Or specify namespace to get pods in particular namespace
@@ -145,17 +149,17 @@ func parse(buf []byte) (*Config, error) {
 		// rand.Seed(uint64(time.Now().Unix()))
 		// conf.Cluster.NodeName = strconv.Itoa((rand.Intn(999999-100000) + 100000))
 		// conf.Cluster.RaftDir = "data/" + conf.Cluster.NodeName
-		Memberst := ""
-		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
-		Members := re.FindAllString(Memberst, -1)
-		// Members := strings.Split(Memberst, ",")
-		fmt.Println("size :", len(Members))
-		conf.Cluster.Members = append(conf.Cluster.Members, Members...)
+		// Memberst := ""
+		// re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
+		// Members := re.FindAllString(Memberst, -1)
+		// // Members := strings.Split(Memberst, ",")
+		// fmt.Println("size :", len(Members))
+		// conf.Cluster.Members = append(conf.Cluster.Members, Members...)
 	} else {
 		Memberst := os.Getenv("IP")
 		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
 		Members := re.FindAllString(Memberst, -1)
-		Members = append(Members,getPodIP()...) 
+		Members = append(Members, getPodIP()...)
 		fmt.Println("size :", len(Members))
 		conf.Cluster.Members = append(conf.Cluster.Members, Members...)
 

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: k8mqtt5
-          image: gcr.io/iserveustaging/comqtt@sha256:2782ff754a771f72f8eb6a26615d9ac8d583be444a66bbf88d09c18cb5667ee4
+          image: gcr.io/iserveustaging/comqtt@sha256:ed56988e77da4589dd45eb6793f9445214fb29b754f4196b45d6c60cddcb9835
           ports:
           - containerPort: 80
           - containerPort: 7946
@@ -39,11 +39,11 @@ spec:
             - name: MY_POD_LABEL
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.labels["app"]
-            - name: IP
-              value: "10.236.4.26:7946"
+                  fieldPath: metadata.labels['app']
+            # - name: IP
+            #   value: "10.236.4.26:7946"
             - name: RaftBootstrap
-              value: "false"
+              value: "true"
             # - name: advertise-addr
             #   value: "34.47.188.144"
       restartPolicy: Always

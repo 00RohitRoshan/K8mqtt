@@ -16,7 +16,7 @@ cluster:
   bind-port: 7946 #The port is used for both UDP and TCP gossip. Used for member discovery and join.
   advertise-addr: #Configuration related to what address to advertise to other cluster members. Used for nat traversal. The default value is bind-addr.
   advertise-port: #Used for member communication. If this port is not set, the default value is bind-port.
-  members: [172.16.5.182:7946,34.47.181.2:7946]  #Seeds member list, format such as 192.168.0.103:7946,192.168.0.104:7946
+  members: []  #Seeds member list, format such as 192.168.0.103:7946,192.168.0.104:7946
   queue-depth: 10240 #Size of memberlist internal channel which handles UDP messages.
   raft-impl: 0 #The raft implementer: 0 hashicorp/raft, 1 etcd/raft
   raft-port: 8946 #Distributed consistency coordination communication port
