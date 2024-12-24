@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8mqtt2
+  name: k8mqtt5
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8mqtt2
+      app: k8mqtt5
   template:
     metadata:
       labels:
-        app: k8mqtt2
+        app: k8mqtt5
     spec:
       containers:
-        - name: k8mqtt2
-          image: gcr.io/iserveustaging/comqtt@sha256:cef8333fc054a36467fcbc8a5d78b6d323c58c38459233564e9f6f61e717b45b
+        - name: k8mqtt5
+          image: gcr.io/iserveustaging/comqtt@sha256:2782ff754a771f72f8eb6a26615d9ac8d583be444a66bbf88d09c18cb5667ee4
           ports:
           - containerPort: 80
           - containerPort: 7946
@@ -36,22 +36,26 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: MY_POD_LABEL
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels["app"]
             - name: IP
-              value: "34.47.181.2:7946"
+              value: "10.236.4.26:7946"
             - name: RaftBootstrap
               value: "false"
-            - name: advertise-addr
-              value: "34.47.170.202"
+            # - name: advertise-addr
+            #   value: "34.47.188.144"
       restartPolicy: Always
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: k8mqtt2
+  name: k8mqtt5
 spec:
   selector:
-    app: k8mqtt2
+    app: k8mqtt5
   ports:
     - protocol: TCP
       name: rest

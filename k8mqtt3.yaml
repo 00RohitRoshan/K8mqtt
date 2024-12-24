@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8mqtt3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8mqtt3
+  template:
+    metadata:
+      labels:
+        app: k8mqtt3
+    spec:
+      containers:
+        - name: k8mqtt3
+          image: gcr.io/iserveustaging/comqtt@sha256:2782ff754a771f72f8eb6a26615d9ac8d583be444a66bbf88d09c18cb5667ee4
+          ports:
+          - containerPort: 80
+          - containerPort: 7946
+          - containerPort: 8946
+          - containerPort: 17946
+          - containerPort: 1883
+          - containerPort: 1882
+          - containerPort: 8080
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            # - name: MY_POD_LABEL
+            #   valueFrom:
+            #     fieldRef:
+            #       fieldPath: metadata.labels
+            - name: IP
+              value: "34.47.181.2:7946"
+            - name: RaftBootstrap
+              value: "false"
+            - name: advertise-addr
+              value: "34.47.188.144"
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8mqtt3
+spec:
+  selector:
+    app: k8mqtt3
+  ports:
+    - protocol: TCP
+      name: rest
+      port: 80
+      targetPort: 80
+    - protocol: TCP
+      name: gossip
+      port: 7946
+      targetPort: 7946
+    - protocol: TCP
+      name: raft
+      port: 8946
+      targetPort: 8946
+    - protocol: TCP
+      name: grpc
+      port: 17946
+      targetPort: 17946
+    - protocol: TCP
+      name: tcp
+      port: 1883
+      targetPort: 1883
+    - protocol: TCP
+      name: ws
+      port: 1882
+      targetPort: 1882
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer

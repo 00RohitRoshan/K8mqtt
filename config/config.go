@@ -5,6 +5,7 @@
 package config
 
 import (
+	"context"
 	tls2 "crypto/tls"
 	"crypto/x509"
 	"errors"
@@ -16,6 +17,11 @@ import (
 	"github.com/wind-c/comqtt/v2/cluster/log"
 	comqtt "github.com/wind-c/comqtt/v2/mqtt"
 	"gopkg.in/yaml.v3"
+
+	// k8e "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 const (
@@ -75,6 +81,59 @@ func Load(yamlFile string) (*Config, error) {
 	return parse(bs)
 }
 
+func getPodIP() []string {
+	// creates the in-cluster config
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+	// creates the clientset
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+	pods, err := clientset.CoreV1().Pods(os.Getenv("MY_POD_NAMESPACE")).List(context.TODO(), metav1.ListOptions{
+		LabelSelector: os.Getenv("MY_POD_LABEL"),
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	var res []string
+	for _, e := range pods.Items {
+		res = append(res, e.Status.PodIP+"7946")
+	}
+	// for {
+	// 	// get pods in all the namespaces by omitting namespace
+	// 	// Or specify namespace to get pods in particular namespace
+	// 	pods, err := clientset.CoreV1().Pods(os.Getenv("MY_POD_NAMESPACE")).List(context.TODO(), metav1.ListOptions{
+	// 		LabelSelector: os.Getenv("MY_POD_LABEL"),
+	// 	})
+	// 	if err != nil {
+	// 		panic(err.Error())
+	// 	}
+	// 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	// 	fmt.Println("pods :", pods)
+
+	// 	// Examples for error handling:
+	// 	// - Use helper functions e.g. errors.IsNotFound()
+	// 	// - And/or cast to StatusError and use its properties like e.g. ErrStatus.Message
+	// 	// _, err = clientset.CoreV1().Pods("default").Get(context.TODO(), "example-xxxxx", metav1.GetOptions{})
+	// 	if k8e.IsNotFound(err) {
+	// 		fmt.Printf("Pod example-xxxxx not found in default namespace\n")
+	// 	} else if statusError, isStatus := err.(*k8e.StatusError); isStatus {
+	// 		fmt.Printf("Error getting pod %v\n", statusError.ErrStatus.Message)
+	// 	} else if err != nil {
+	// 		panic(err.Error())
+	// 	} else {
+	// 		fmt.Printf("Found example-xxxxx pod in default namespace\n")
+	// 	}
+
+	// 	time.Sleep(10 * time.Second)
+	// }
+	return res
+}
+
 func parse(buf []byte) (*Config, error) {
 	conf := &Config{}
 	err := yaml.Unmarshal(buf, conf)
@@ -96,8 +155,10 @@ func parse(buf []byte) (*Config, error) {
 		Memberst := os.Getenv("IP")
 		re := regexp.MustCompile(`(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})`)
 		Members := re.FindAllString(Memberst, -1)
+		Members = append(Members,getPodIP()...) 
+		fmt.Println("size :", len(Members))
 		conf.Cluster.Members = append(conf.Cluster.Members, Members...)
-		
+
 		conf.Cluster.BindAddr = os.Getenv("MY_POD_IP")
 		// conf.Cluster.AdvertiseAddr = os.Getenv("MY_POD_IP")
 		conf.Cluster.NodeName = os.Getenv("MY_POD_NAME")
