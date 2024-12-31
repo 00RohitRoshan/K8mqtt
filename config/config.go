@@ -93,19 +93,23 @@ func getPodIP() []string {
 	if err != nil {
 		panic(err.Error())
 	}
+	start:  // tobe tested
 	pods, err := clientset.CoreV1().Pods(os.Getenv("MY_POD_NAMESPACE")).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 	var res []string
 	for _, e := range pods.Items {
 		name := strings.Split(e.Name, "-")
 		if(name[0] == os.Getenv("MY_POD_LABEL")){
-			fmt.Println("pod ip :")
+			if e.Status.PodIP == ""{
+				goto start // tobe tested
+			}
 			res = append(res, e.Status.PodIP+":7946")
 		}
 	}
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	fmt.Println("pod ip :",res)
 	fmt.Printf("There are %d members to join\n", len(res))
 	// for {
 	// 	// get pods in all the namespaces by omitting namespace

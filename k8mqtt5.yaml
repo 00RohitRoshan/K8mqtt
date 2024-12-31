@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: k8mqtt5
-          image: gcr.io/iserveustaging/comqtt@sha256:ed56988e77da4589dd45eb6793f9445214fb29b754f4196b45d6c60cddcb9835
+          image: gcr.io/iserveustaging/comqtt@sha256:4054b5ffeb4406875de6c374c8341b140349cbc9371ae99e99773f02c4fc3fea
           ports:
           - containerPort: 80
           - containerPort: 7946
